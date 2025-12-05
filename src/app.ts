@@ -1,14 +1,19 @@
-import express from "express";
-import cors from "cors";
+import { ApolloServer } from "apollo-server";
+import { typeDefs } from "./graphql/typeDefs";
+import { resolvers } from "./graphql/resolvers";
 import dotenv from "dotenv";
+import "./config/database"; // conecta Mongo
 
 dotenv.config();
 
-export const app = express();
+async function startServer() {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+  });
 
-app.use(cors());
-app.use(express.json());
+  const { url } = await server.listen({ port: Number(process.env.PORT) || 3333 });
+  console.log(`🚀 Server running at ${url}`);
+}
 
-app.get("/health", (_, res) => {
-  res.json({ status: "ok" });
-});
+startServer();

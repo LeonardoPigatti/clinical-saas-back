@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function connectDB() {
   try {
@@ -8,3 +10,5 @@ export async function connectDB() {
     console.error("❌ Erro ao conectar no Mongo:", error);
   }
 }
+
+connectDB();

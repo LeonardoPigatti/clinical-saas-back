@@ -1,14 +1,16 @@
-import { app } from "./app";
-import { connectDB } from "./config/database";
+import { ApolloServer } from "apollo-server";
+import { typeDefs } from "./graphql/typeDefs";
+import { resolvers } from "./graphql/resolvers";
+import dotenv from "dotenv";
+import "./config/database";
 
-const PORT = process.env.PORT || 3333;
+dotenv.config();
 
-async function start() {
-  await connectDB();
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
 
-  app.listen(PORT, () => {
-    console.log(`🚀 Backend rodando em http://localhost:${PORT}`);
-  });
-}
-
-start();
+server.listen({ port: Number(process.env.PORT) || 3333 }).then(({ url }) => {
+  console.log(`🚀 Server running at ${url}`);
+});

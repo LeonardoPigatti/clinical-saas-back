@@ -1,5 +1,8 @@
 import { User } from "../models/User";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
 export const resolvers = {
   Query: {
@@ -24,6 +27,27 @@ export const resolvers = {
 
       await user.save();
       return user;
+    },
+
+    login: async (_: any, args: any) => {
+      const { email, password } = args;
+
+      // Verifica usuário
+      const user = await User.findOne({ email });
+      if (!user) throw new Error("Usuário não encontrado");
+
+      // Verifica senha
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) throw new Error("Senha incorreta");
+
+      // Gera token JWT
+      const token = jwt.sign(
+        { userId: user._id, companyId: user.companyId, role: user.role },
+        JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+
+      return { token, user };
     },
   },
 };

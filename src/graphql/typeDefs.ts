@@ -24,8 +24,26 @@ export const typeDefs = gql`
       companyId: String!
     ): User!
   }
+    type Mutation {
+  registerUser(
+    name: String!
+    email: String!
+    password: String!
+    role: Role
+    companyId: String!
+  ): User!
+
+  login(email: String!, password: String!): AuthPayload!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
 
   type Query {
     hello: String
   }
 `;
+

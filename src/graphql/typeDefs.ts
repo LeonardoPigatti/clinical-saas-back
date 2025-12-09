@@ -42,6 +42,9 @@ type Query {
       companyId: String
     ): User!
 
+  updateCompany(companyId: ID!, newName: String!, user: UserInput!): Company!
+
+
     login(email: String!, password: String!): AuthPayload!
 
 createCompany(name: String!, user: UserInput!): Company!

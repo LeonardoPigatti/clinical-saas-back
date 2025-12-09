@@ -91,6 +91,27 @@ export const resolvers = {
       return company;
     },
 
+    updateCompany: async (_: any, args: any) => {
+    const { companyId, newName, user } = args;
+
+    // Confere se o usuário é admin e dono da company
+    if (!user || user.role !== "admin") {
+      throw new Error("Não autorizado");
+    }
+
+    const company = await Company.findById(companyId);
+    if (!company) throw new Error("Company não encontrada");
+
+    if (company.adminId.toString() !== user.id) {
+      throw new Error("Você só pode editar sua própria company");
+    }
+
+    company.name = newName;
+    await company.save();
+
+    return company;
+  },
+
 
   },
   };

@@ -7,18 +7,22 @@ export const typeDefs = gql`
     staff
   }
 
-  type Company {
-    id: ID!
-    name: String!
-    adminId: ID!
-  }
+type Company {
+  id: ID!
+  name: String!
+  adminId: ID!
+}
 
-  input UserInput {
+input UserInput {
   id: ID!
   name: String!
   email: String!
   role: Role!
   companyId: String
+}
+
+type Query {
+  getUserCompanies(user: UserInput!): [Company!]!
 }
 
   type User {

@@ -8,6 +8,22 @@ const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 export const resolvers = {
   Query: {
     hello: () => "Hello GraphQL!",
+            getUserCompanies: async (_: any, args: any) => {
+      // args.user é o user que vem do frontend
+      const user = args.user;
+
+      if (!user) throw new Error("Usuário não informado");
+
+      // Pega todas as companies do usuário (companyId ou adminId)
+      const companies = await Company.find({
+        $or: [
+          { adminId: user.id },        // se ele é admin
+          { _id: user.companyId },     // se ele pertence a uma company
+        ],
+      });
+
+      return companies;
+    },
   },
   Mutation: {
     registerUser: async (_: any, args: any) => {
@@ -73,7 +89,9 @@ export const resolvers = {
       }
 
       return company;
-    }
+    },
+
+
   },
   };
 

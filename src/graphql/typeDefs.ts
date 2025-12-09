@@ -44,6 +44,9 @@ type Query {
 
   updateCompany(companyId: ID!, newName: String!, user: UserInput!): Company!
 
+  deleteCompany(companyId: ID!, user: UserInput!): Company!
+
+
 
     login(email: String!, password: String!): AuthPayload!
 

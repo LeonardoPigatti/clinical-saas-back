@@ -91,6 +91,25 @@ export const resolvers = {
       return company;
     },
 
+     deleteCompany: async (_: any, args: any) => {
+    const { companyId, user } = args;
+
+    if (!user || user.role !== "admin") {
+      throw new Error("Não autorizado");
+    }
+
+    const company = await Company.findById(companyId);
+    if (!company) throw new Error("Company não encontrada");
+
+    if (company.adminId.toString() !== user.id) {
+      throw new Error("Você só pode excluir sua própria company");
+    }
+
+    await company.deleteOne();
+
+    return { id: companyId, name: company.name, adminId: company.adminId };
+  },
+
     updateCompany: async (_: any, args: any) => {
     const { companyId, newName, user } = args;
 

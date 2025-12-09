@@ -1,4 +1,5 @@
 import { User } from "../models/User";
+import { Company } from "../models/Company";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -49,5 +50,30 @@ export const resolvers = {
 
       return { token, user };
     },
+
+       createCompany: async (_: any, args: any, context: any) => {
+      // Pega o usuário direto do args (frontend envia o user completo)
+      const user = args.user;
+
+      if (!user || user.role !== "admin") {
+        throw new Error("Somente admins podem criar companies");
+      }
+
+      const company = new Company({
+        name: args.name,
+        adminId: user.id,
+      });
+      await company.save();
+
+      // Atualiza companyId do admin no banco
+      const adminUser = await User.findById(user.id);
+      if (adminUser) {
+        adminUser.companyId = company._id.toString();
+        await adminUser.save();
+      }
+
+      return company;
+    }
   },
-};
+  };
+

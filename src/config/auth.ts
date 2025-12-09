@@ -1,24 +1,28 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+const JWT_SECRET = process.env.JWT_SECRET!; // usa seu segredo do .env
 
 export interface AuthUser {
   userId: string;
-  companyId: string;
-  role: string;
+  role: "admin" | "doctor" | "staff";
+  companyId?: string;
 }
 
-// `req` é any no Apollo Server standalone
-export function getUserFromToken(req: any): AuthUser | null {
-  const authHeader = req.headers?.authorization || "";
-  const token = authHeader.replace("Bearer ", "");
+export const getUserFromToken = (req: any): AuthUser | null => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return null;
 
-  if (!token) return null;
-
+  const token = authHeader.replace("Bearer ", "").trim();
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as AuthUser;
-    return decoded;
-  } catch (err) {
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+    console.log("Token decodificado:", decoded);
+    return {
+      userId: decoded.userId,
+      role: decoded.role,
+      companyId: decoded.companyId,
+    };
+  } catch (err: any) {
+    console.log("Erro ao decodificar JWT:", err.message);
     return null;
   }
-}
+};

@@ -10,10 +10,10 @@ dotenv.config();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  // Contexto para autenticação JWT
   context: ({ req }): { user: AuthUser | null } => {
-    // req é any no Apollo Server standalone
     const user = getUserFromToken(req);
+    console.log("Token recebido do frontend:", req.headers.authorization);
+    console.log("Usuário decodificado no context:", user);
     return { user };
   },
 });

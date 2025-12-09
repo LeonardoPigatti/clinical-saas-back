@@ -7,12 +7,26 @@ export const typeDefs = gql`
     staff
   }
 
+  type Company {
+    id: ID!
+    name: String!
+    adminId: ID!
+  }
+
+  input UserInput {
+  id: ID!
+  name: String!
+  email: String!
+  role: Role!
+  companyId: String
+}
+
   type User {
     id: ID!
     name: String!
     email: String!
     role: Role!
-    companyId: String!
+    companyId: String
   }
 
   type Mutation {
@@ -20,30 +34,21 @@ export const typeDefs = gql`
       name: String!
       email: String!
       password: String!
-      role: Role
-      companyId: String!
+      role: Role!
+      companyId: String
     ): User!
+
+    login(email: String!, password: String!): AuthPayload!
+
+createCompany(name: String!, user: UserInput!): Company!
   }
-    type Mutation {
-  registerUser(
-    name: String!
-    email: String!
-    password: String!
-    role: Role
-    companyId: String!
-  ): User!
 
-  login(email: String!, password: String!): AuthPayload!
-}
-
-type AuthPayload {
-  token: String!
-  user: User!
-}
-
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
 
   type Query {
     hello: String
   }
 `;
-
